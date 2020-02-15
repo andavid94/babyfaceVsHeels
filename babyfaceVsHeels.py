@@ -4,7 +4,7 @@ class Vertex:
     def __init__(self, n):
         self.name = n
         self.neighbors = list()
-        self.distance = 9999
+        self.distance = 1000
         self.color = 'white'
         self.team = 'none'
 
@@ -73,15 +73,50 @@ class Graph:
 
             for v in node_u.neighbors:
                 node_v = self.vertices[v]
-                
+                if node_v.color == 'white':
+                    queue.append(v)
 
+                    if node_v.distance > node_u.distance + 1:
+                        node_v.distance = node_u.distance + 1
+                    
+                    if node_v.distance % 2 == 0:
+                        node_v.team = 'babyface'
+                    else:
+                        node_v.team = 'heel'
+                    
+                    if node_v.team == node_u.team:
+                        self.isPossible = False 
 
 
 def main():
 
-    with open('wrestler2.txt') as f:
-        for line in f:
-            print(line)
+    with open('wrestler1.txt') as f:
+        g = Graph()
+        r = []
+
+        lines = f.read().splitlines()
+
+        numWrestlers = int(lines[0])
+        print(numWrestlers)
+        for i in range(1, numWrestlers + 1):
+            g.addVertex(Vertex(lines[i]))
+
+        for x in range(numWrestlers + 3, len(lines)): #TODO: edit this
+            r.append(lines[x])
+
+        for rival in r:
+            rivalArray = rival.split()
+            g.addEdge(rivalArray[0], rivalArray[1])
+        
+        g.bfs(g.startVertex)
+        if g.isPossible:
+            print("Yes")
+            g.print_babyfaces()
+            g.print_heels()
+        else:
+            print("No")
+        
+
 
 if __name__ == "__main__":
     main()

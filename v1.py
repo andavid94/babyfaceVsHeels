@@ -94,7 +94,7 @@ class Graph:
 g = Graph()
 rivalries = []
 
-f = open(sys.argv[1], 'r')
+f = open(sys.argv[1], 'wrestler2.txt')
 lines = f.read().splitlines()
 
 numWrestlers = map(int, lines[0])
