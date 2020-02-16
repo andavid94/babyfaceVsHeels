@@ -1,20 +1,21 @@
 import sys
+from collections import deque
 
 class Graph:
+    
     vertices = {}
-
     isPossible = True
     babyfaces = 'Babyfaces: '
     heels = 'Heels: '
     startVertex = None
-    count = 0
+    size = 0
 
     def addVertex(self, vertex):
         if isinstance(vertex, Vertex) and vertex.name not in self.vertices:
             self.vertices[vertex.name] = vertex
-            if self.count == 0:
+            if self.size == 0:
                 self.startVertex = vertex
-                self.count = 1
+                self.size = 1
             return True
         else:
             return False
@@ -42,19 +43,21 @@ class Graph:
                 self.heels = self.heels + self.vertices[wrestler].name + ' '
         print(self.heels)
 
-    def bfs(self, vertex):
-        queue = list()
-        vertex.distance = 0
-        vertex.color = 'grey'
-        vertex.team = 'babyface'
+    # try different BFS method
+    def bfs(self, startVertex):
+        queue = deque()          # initiate queue
+        
+        startVertex.distance = 0
+        startVertex.color = 'grey'
+        startVertex.team = 'babyface'
 
-        for v in vertex.neighbors:
-            self.vertices[v].distance = vertex.distance + 1
-            self.vertices[v].team = 'heel'
-            queue.append(v)
+        for adjNode in startVertex.neighbors:
+            self.vertices[adjNode].distance = 1
+            self.vertices[adjNode].team = 'heel'
+            queue.append(adjNode)
 
         while len(queue) > 0:
-            u = queue.pop()
+            u = queue.popleft()
             node_u = self.vertices[u]
             node_u.color = 'grey'
 
@@ -73,6 +76,7 @@ class Graph:
                     
                     if node_v.team == node_u.team:
                         self.isPossible = False 
+
 
 class Vertex:
     def __init__(self, n):
@@ -102,13 +106,14 @@ def main():
         for i in range(1, numWrestlers + 1):
             g.addVertex(Vertex(lines[i]))
 
-        # for each rivalry, create an edge between the two Vertexes
+        # for each rivalry, create an edge between the two wrestlers in the graph
         for i in range(numWrestlers + 3, len(lines)):
             rivals = lines[i].split()
             g.addEdge(rivals[0], rivals[1])
         
-
+        # start BFS from 
         g.bfs(g.startVertex)
+        
         if g.isPossible:
             print("Yes")
             g.print_babyfaces()
