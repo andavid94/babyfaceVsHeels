@@ -4,45 +4,55 @@ from collections import deque
 # define graph class to store Wrestlers as vertices and rivalries as edges
 class Graph:
     
-    vertices = {}
+    vertices = {}                       # store 
     isPossible = True
-    babyfaces = 'Babyfaces: '
-    heels = 'Heels: '
     startVertex = None
+    babyfacesString = 'Babyfaces: '
+    heelsString = 'Heels: '
     size = 0
 
+    # add a new wrestler into the graph
     def addVertex(self, vertex):
+
+        # verify the vertex is valid and does not already exist in the graph
         if isinstance(vertex, Vertex) and vertex.name not in self.vertices:
             self.vertices[vertex.name] = vertex
-            if self.size == 0:
-                self.startVertex = vertex
-                self.size = 1
+            if self.size == 0:                  # this is the first node in the graph
+                self.startVertex = vertex       # initialize starting point
+                self.size = 1                   # initialize size of the graph
             return True
         else:
             return False
 
+    # add a new rivalry, given two nodes
     def addEdge(self, u, v):
+
+        # verify that both nodes exist in the graph
         if u in self.vertices and v in self.vertices:
+
+            # iterate over every key-value pair in vertices
             for key, value in self.vertices.items():
-                if key == u:
-                    value.addNeighbor(v)
                 if key == v:
                     value.addNeighbor(u)
+                if key == u:
+                    value.addNeighbor(v)
             return True
         else:
             return False
     
+    # print wrestlers on the babyface team
     def print_babyfaces(self):
         for wrestler in self.vertices:
             if self.vertices[wrestler].team == 'babyface':
-                self.babyfaces = self.babyfaces + self.vertices[wrestler].name + ' '
-        print(self.babyfaces)
+                self.babyfacesString += (self.vertices[wrestler].name + ' ')
+        print(self.babyfacesString)
 
+    # print wrestlers on the heels team
     def print_heels(self):
         for wrestler in self.vertices:
             if self.vertices[wrestler].team == 'heel':
-                self.heels = self.heels + self.vertices[wrestler].name + ' '
-        print(self.heels)
+                self.heelsString += (self.vertices[wrestler].name + ' ')
+        print(self.heelsString)
 
     # implement BFS to search if all wrestlers can be matched up as rivals
     def bfs(self, startVertex, visited):
@@ -95,7 +105,7 @@ class Vertex:
 def main():
 
     # open file to read in data
-    with open('wrestler2.txt') as f:
+    with open('wrestler1.txt') as f:
         g = Graph()         # initialize graph
         r = []              # initialize empty list to store rivalries
 
