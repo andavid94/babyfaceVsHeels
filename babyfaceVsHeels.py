@@ -1,6 +1,7 @@
 import sys
 from collections import deque
 
+# define graph class to store Wrestlers as vertices and rivalries as edges
 class Graph:
     
     vertices = {}
@@ -43,12 +44,12 @@ class Graph:
                 self.heels = self.heels + self.vertices[wrestler].name + ' '
         print(self.heels)
 
-    # try different BFS method
-    def bfs(self, startVertex):
+    # implement BFS to search if all wrestlers can be matched up as rivals
+    def bfs(self, startVertex, visited):
         queue = deque()          # initiate queue
         
         startVertex.distance = 0
-        startVertex.color = 'grey'
+        visited.append(startVertex)
         startVertex.team = 'babyface'
 
         for adjNode in startVertex.neighbors:
@@ -59,11 +60,11 @@ class Graph:
         while len(queue) > 0:
             u = queue.popleft()
             node_u = self.vertices[u]
-            node_u.color = 'grey'
+            visited.append(u)
 
             for v in node_u.neighbors:
                 node_v = self.vertices[v]
-                if node_v.color == 'white':
+                if v not in visited:
                     queue.append(v)
 
                     if node_v.distance > node_u.distance + 1:
@@ -83,7 +84,6 @@ class Vertex:
         self.name = n
         self.neighbors = list()
         self.distance = 1000
-        self.color = 'white'
         self.team = 'none'
 
     def addNeighbor(self, v):
@@ -112,7 +112,8 @@ def main():
             g.addEdge(rivals[0], rivals[1])
         
         # start BFS from 
-        g.bfs(g.startVertex)
+        visited = []
+        g.bfs(g.startVertex, visited)
         
         if g.isPossible:
             print("Yes")
