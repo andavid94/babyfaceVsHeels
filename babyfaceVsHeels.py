@@ -1,18 +1,5 @@
 import sys
 
-class Vertex:
-    def __init__(self, n):
-        self.name = n
-        self.neighbors = list()
-        self.distance = 1000
-        self.color = 'white'
-        self.team = 'none'
-
-    def addNeighbor(self, v):
-        if v not in self.neighbors:
-            self.neighbors.append(v)
-            self.neighbors.sort()
-
 class Graph:
     vertices = {}
 
@@ -87,27 +74,40 @@ class Graph:
                     if node_v.team == node_u.team:
                         self.isPossible = False 
 
+class Vertex:
+    def __init__(self, n):
+        self.name = n
+        self.neighbors = list()
+        self.distance = 1000
+        self.color = 'white'
+        self.team = 'none'
+
+    def addNeighbor(self, v):
+        if v not in self.neighbors:
+            self.neighbors.append(v)
+            self.neighbors.sort()
+
 
 def main():
 
-    with open('wrestler1.txt') as f:
-        g = Graph()
-        r = []
+    # open file to read in data
+    with open('wrestler2.txt') as f:
+        g = Graph()         # initialize graph
+        r = []              # initialize empty list to store rivalries
 
         lines = f.read().splitlines()
 
+        # for each wrestler, create a vertex in the graph
         numWrestlers = int(lines[0])
-        print(numWrestlers)
         for i in range(1, numWrestlers + 1):
             g.addVertex(Vertex(lines[i]))
 
-        for x in range(numWrestlers + 3, len(lines)): #TODO: edit this
-            r.append(lines[x])
-
-        for rival in r:
-            rivalArray = rival.split()
-            g.addEdge(rivalArray[0], rivalArray[1])
+        # for each rivalry, create an edge between the two Vertexes
+        for i in range(numWrestlers + 3, len(lines)):
+            rivals = lines[i].split()
+            g.addEdge(rivals[0], rivals[1])
         
+
         g.bfs(g.startVertex)
         if g.isPossible:
             print("Yes")
